@@ -83,3 +83,43 @@ var marker = new google.maps.Marker({
                   // html: infoWindowContent(winery.winery),
                   icon: 'http://icons.iconarchive.com/icons/visualpharm/icons8-metro-style/32/Users-Police-icon.png'
               });
+
+var current_status;
+
+function updateFeed(polled_status){
+  if (polled_status !== current_status){
+    current_status = polled_status;
+    console.log(current_status);
+    var status = "<p class='curStat'>"
+    switch(current_status)
+    {
+    case 0:
+      status = "<div style='display:none' class='alert alert-success'>All is well!</div>";
+      break;
+    case 1:
+      status = status + "<div style='display:none' class='alert alert-info'>Officer opened holster.</div>";
+      break;
+    case 2:
+      status = status + "<div style='display:none' class='alert alert-warning'>Officer pulled taser.</div>";
+      break;
+    case 3:
+      status = status + "<div style='display:none' class='alert alert-danger'>Officer pulled gun.</div>";
+      break;
+    case 4:
+      status = status + "<div style='display:none' class='alert alert-danger'><strong>Officer Down!</strong></div>";
+      break;
+    }
+    $(status).appendTo(".alerts").fadeIn('slow');
+    // $(".alerts").append(status).fadeIn('slow');
+  }
+}
+
+(function poll(){
+    $.ajax({ url: "/status", success: function(data){
+        //Update feed and map if needed
+        // console.log(data.status);
+        updateFeed(data.status);
+        // salesGauge.setValue(data.value);
+
+    }, dataType: "json", complete: poll, timeout: 3000 });
+})();

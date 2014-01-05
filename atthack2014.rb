@@ -29,11 +29,15 @@ class Atthack2014 < Sinatra::Base
     # end
   end
 
-  get '/' do
+  get '/reset' do
     @@taser   = 0
     @@gun     = 0
     @@down    = 0
     @@holster = 0
+    status 200
+  end
+
+  get '/' do
     haml :home, :format => :html5
   end
 
@@ -66,7 +70,7 @@ class Atthack2014 < Sinatra::Base
     {holster: @@holster}.to_json
   end
 
-  get '/taser/:status' do
+  post '/taser/:status' do
     @@taser = params[:status]
     @@gun     = 0
     @@down    = 0
