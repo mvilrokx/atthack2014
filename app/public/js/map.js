@@ -11,18 +11,18 @@ var map = new google.maps.Map(document.getElementById("map-canvas"),
     mapOptions);
 
 var centerCoord;
+var central_marker;
 
 function success(pos) {
   centerCoord = pos.coords;
   var latLng = new google.maps.LatLng(centerCoord.latitude, centerCoord.longitude);
   map.setCenter(latLng);
-  var marker = new google.maps.Marker({
-                    position: latLng,
-                    map: map,
-                    title: "Noel",
-                    // html: infoWindowContent(winery.winery),
-                    icon: 'http://icons.iconarchive.com/icons/visualpharm/icons8-metro-style/32/Users-Police-icon.png'
-                });
+  central_marker = new google.maps.Marker({
+                           position: latLng,
+                           map: map,
+                           title: "Noel",
+                           icon: 'http://icons.iconarchive.com/icons/visualpharm/icons8-metro-style/32/Users-Police-icon.png'
+                          });
 
   for (var i=0;i<10;i++) {
     var random = Math.random() * (0.005 - 0.001) + 0.001;
@@ -46,6 +46,13 @@ function success(pos) {
   console.log('Latitude : ' + centerCoord.latitude);
   console.log('Longitude: ' + centerCoord.longitude);
   console.log('More or less ' + centerCoord.accuracy + ' meters.');
+
+  (function poll(){
+      $.ajax({ url: "/status", success: function(data){
+          updateFeed(data.status);
+      }, dataType: "json", complete: poll, timeout: 3000 });
+  })();
+
 };
 
 function error(err) {
@@ -75,14 +82,15 @@ google.maps.event.addDomListener(window, 'load', initialize);
 //                   icon: 'http://icons.iconarchive.com/icons/visualpharm/icons8-metro-style/32/Users-Police-icon.png'
 //               });
 
-var latLng = new google.maps.LatLng(36.1208963, -115.1937808);
-var marker = new google.maps.Marker({
-                  position: latLng,
-                  map: map,
-                  title: "Test",
-                  // html: infoWindowContent(winery.winery),
-                  icon: 'http://icons.iconarchive.com/icons/visualpharm/icons8-metro-style/32/Users-Police-icon.png'
-              });
+// var latLng = new google.maps.LatLng(36.1208963, -115.1937808);
+// var marker = new google.maps.Marker({
+//                   position: latLng,
+//                   map: map,
+//                   title: "Test",
+//                   // html: infoWindowContent(winery.winery),
+//                   icon: '/images/Users-Police-icon-blue.gif'
+//                   // icon: 'http://icons.iconarchive.com/icons/visualpharm/icons8-metro-style/32/Users-Police-icon.png'
+//               });
 
 var current_status;
 
@@ -98,15 +106,19 @@ function updateFeed(polled_status){
       break;
     case 1:
       status = status + "<div style='display:none' class='alert alert-info'>Officer opened holster.</div>";
+      central_marker.setIcon("/images/Users-Police-icon-green.gif");
       break;
     case 2:
       status = status + "<div style='display:none' class='alert alert-warning'>Officer pulled taser.</div>";
+      central_marker.setIcon("/images/Users-Police-icon-pink.gif");
       break;
     case 3:
       status = status + "<div style='display:none' class='alert alert-danger'>Officer pulled gun.</div>";
+      central_marker.setIcon("/images/Users-Police-icon-blue.gif");
       break;
     case 4:
       status = status + "<div style='display:none' class='alert alert-danger'><strong>Officer Down!</strong></div>";
+      central_marker.setIcon("/images/Users-Police-icon-red.gif");
       break;
     }
     $(status).appendTo(".alerts").fadeIn('slow');
@@ -114,12 +126,8 @@ function updateFeed(polled_status){
   }
 }
 
-(function poll(){
-    $.ajax({ url: "/status", success: function(data){
-        //Update feed and map if needed
-        // console.log(data.status);
-        updateFeed(data.status);
-        // salesGauge.setValue(data.value);
-
-    }, dataType: "json", complete: poll, timeout: 3000 });
-})();
+// (function poll(){
+//     $.ajax({ url: "/status", success: function(data){
+//         updateFeed(data.status);
+//     }, dataType: "json", complete: poll, timeout: 3000 });
+// })();
