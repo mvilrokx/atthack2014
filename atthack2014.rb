@@ -14,6 +14,10 @@ class Atthack2014 < Sinatra::Base
   configure do
     set :views, settings.root + '/app/views'
     set :public_folder, settings.root + '/app/public'
+    @@holster = 0
+    @@taser = 0
+    @@gun = 0
+    @@down = 0
   end
 
   before do
@@ -25,84 +29,79 @@ class Atthack2014 < Sinatra::Base
     # end
   end
 
-  # def self.reset
-  #   session[:teaser]  = 0
-  #   session[:gun]     = 0
-  #   session[:down]    = 0
-  #   session[:holster] = 0
-  # end
-
   get '/' do
-    session[:teaser]  = 0
-    session[:gun]     = 0
-    session[:down]    = 0
-    session[:holster] = 0
+    @@taser   = 0
+    @@gun     = 0
+    @@down    = 0
+    @@holster = 0
     haml :home, :format => :html5
   end
 
   get '/holster' do
     content_type :json
-    {holster: session[:holster]}.to_json
+    {holster: @@holster}.to_json
   end
 
   get '/gun' do
     content_type :json
-    {gun: session[:gun]}.to_json
+    {gun: @@gun}.to_json
   end
 
   get '/down' do
     content_type :json
-    {down: session[:down]}.to_json
+    {down: @@down}.to_json
   end
 
-  get '/teaser' do
+  get '/taser' do
     content_type :json
-    {teaser: session[:teaser]}.to_json
+    {taser: @@taser}.to_json
   end
 
   post '/holster/:status' do
-    session[:holster] = params[:status]
-    session[:teaser]  = 0
-    session[:gun]     = 0
-    session[:down]    = 0
-    # content_type :json
-    # {holster: session[:holster]}.to_json
-    status 200
+    @@holster = params[:status]
+    @@taser   = 0
+    @@gun     = 0
+    @@down    = 0
+    content_type :json
+    {holster: @@holster}.to_json
   end
 
-  post '/teaser/:status' do
-    session[:teaser] = params[:status]
-    session[:gun]     = 0
-    session[:down]    = 0
-    session[:holster] = 0
-    status 200
+  get '/taser/:status' do
+    @@taser = params[:status]
+    @@gun     = 0
+    @@down    = 0
+    @@holster = 0
+    content_type :json
+    {taser: @@taser}.to_json
   end
 
   post '/gun/:status' do
-    session[:gun] = params[:status]
-    session[:teaser]  = 0
-    session[:down]    = 0
-    session[:holster] = 0
-    status 200
+    @@gun     = params[:status]
+    @@taser   = 0
+    @@down    = 0
+    @@holster = 0
+    content_type :json
+    {gun: @@gun}.to_json
   end
 
   post '/down/:status' do
-    session[:down] = params[:status]
-    session[:teaser]  = 0
-    session[:gun]     = 0
-    session[:holster] = 0
-    status 200
+    @@down    = params[:status]
+    @@taser   = 0
+    @@gun     = 0
+    @@holster = 0
+    content_type :json
+    {down: @@down}.to_json
   end
 
   get '/status' do
     content_type :json
-    if session[:holster] == "1"
+    if @@holster == "1"
       status = 1
-    elsif session[:teaser] == "1"
+    elsif @@taser == "1"
       status = 2
-    elsif session[:gun] == "1"
+    elsif @@gun == "1"
       status = 3
-    elsif session[:down] == "1"
+    elsif @@down == "1"
       status = 4
     else
       status = 0
