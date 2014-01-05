@@ -60,7 +60,7 @@ class Atthack2014 < Sinatra::Base
     {teaser: session[:teaser]}.to_json
   end
 
-  get '/holster/:status' do
+  post '/holster/:status' do
     session[:holster] = params[:status]
     session[:teaser]  = 0
     session[:gun]     = 0
@@ -70,7 +70,7 @@ class Atthack2014 < Sinatra::Base
     status 200
   end
 
-  get '/teaser/:status' do
+  post '/teaser/:status' do
     session[:teaser] = params[:status]
     session[:gun]     = 0
     session[:down]    = 0
@@ -78,7 +78,7 @@ class Atthack2014 < Sinatra::Base
     status 200
   end
 
-  get '/gun/:status' do
+  post '/gun/:status' do
     session[:gun] = params[:status]
     session[:teaser]  = 0
     session[:down]    = 0
@@ -86,7 +86,7 @@ class Atthack2014 < Sinatra::Base
     status 200
   end
 
-  get '/down/:status' do
+  post '/down/:status' do
     session[:down] = params[:status]
     session[:teaser]  = 0
     session[:gun]     = 0
