@@ -41,6 +41,10 @@ class Atthack2014 < Sinatra::Base
     haml :home, :format => :html5
   end
 
+  get '/google_glass' do
+    haml :map, :format => :html5
+  end
+
   get '/holster' do
     content_type :json
     {holster: @@holster}.to_json
