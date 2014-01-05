@@ -1,0 +1,15 @@
+!!!
+%html
+  %head
+    %title AT&T Hackathon 2014
+    %link{rel: "stylesheet", href: "//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"}
+    %link{rel: "stylesheet", href: "//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css"}
+    %link{rel: "stylesheet", href: "/css/main.css"}
+
+  %body
+    = yield
+
+    %script{src: "//code.jquery.com/jquery.js"}
+    %script{src: "//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"}
+    %script{src: "//maps.googleapis.com/maps/api/js?key=AIzaSyB9KIFldfL7F-_ctsktjTEOI0eu389NprM&sensor=false"}
+    %script{src: "/js/map.js"}
